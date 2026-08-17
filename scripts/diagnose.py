@@ -115,6 +115,14 @@ def _anchor(hits: list[dict], fallback: str) -> str:
     return text[:140] + ("…" if len(text) > 140 else "")
 
 
+def _scene(ctx: dict, key: str, hits: list[dict], fallback: str) -> str:
+    """优先使用 Agent 从证据归纳的短场景名，再回退到原始观察。"""
+    scenes = ctx.get("action_scenes", {})
+    if isinstance(scenes, dict) and isinstance(scenes.get(key), str) and scenes[key].strip():
+        return scenes[key].strip()
+    return _anchor(hits, fallback)
+
+
 def render_concrete_actions(data: dict, r: dict, model: dict, audience: str) -> list[str]:
     """从真实证据改写行动；没有场景时明确标记待补，不凭空造项目。"""
     ctx = data.get("context", {})
@@ -127,7 +135,7 @@ def render_concrete_actions(data: dict, r: dict, model: dict, audience: str) -> 
 
     if r["primary"]:
         key = r["primary"]
-        anchor = _anchor(r["mcc_hits"][key], scenario)
+        anchor = _scene(ctx, key, r["mcc_hits"][key], scenario)
         if audience == "self":
             action = (f"把“{anchor}”选为一个端到端主战场，下一次复盘前写清一个结果指标、一个质量或验收标准，"
                       "并约定完成日期。")
@@ -147,7 +155,7 @@ def render_concrete_actions(data: dict, r: dict, model: dict, audience: str) -> 
         })
 
     if r["mcc_hits"]["power"]:
-        anchor = _anchor(r["mcc_hits"]["power"], scenario)
+        anchor = _scene(ctx, "power", r["mcc_hits"]["power"], scenario)
         if audience == "self":
             action = (f"在“{anchor}”对应的跨团队事项中，把推动事项改写成 owner、截止时间和决策点，"
                       "每次会议只保留未关闭的阻塞项。")
@@ -165,7 +173,7 @@ def render_concrete_actions(data: dict, r: dict, model: dict, audience: str) -> 
         })
 
     if r["mcc_hits"]["affiliation"]:
-        anchor = _anchor(r["mcc_hits"]["affiliation"], scenario)
+        anchor = _scene(ctx, "affiliation", r["mcc_hits"]["affiliation"], scenario)
         if audience == "self":
             action = (f"在“{anchor}”对应的协作场景中固定一个反馈回流节点：会前列问题、会后记负责人和期限，"
                       "下一次只复盘未关闭项。")
@@ -184,7 +192,7 @@ def render_concrete_actions(data: dict, r: dict, model: dict, audience: str) -> 
 
     for key in SDT:
         if r["sdt_low"][key]:
-            anchor = _anchor(r["sdt_low"][key], scenario)
+            anchor = _scene(ctx, key, r["sdt_low"][key], scenario)
             actions.append({
                 "title": f"优先补足{ sdt[key]['label'] }需求",
                 "scene": anchor,
