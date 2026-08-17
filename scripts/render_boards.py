@@ -150,9 +150,10 @@ def render_boundary(scene: dict) -> tuple[int, int, str]:
             rect(x, 385, 500, 315, fill, NAVY, 4),
             text(x + 35, 480, number, 80, accent),
             text(x + 35, 535, title, 30, fg),
-            text(x + 35, 595, lines[0], 26, fg),
-            text(x + 35, 645, lines[1], 26, fg),
-            text(x + 35, 695, lines[2], 24, fg),
+            # Keep the final baseline safely above the card's inner bottom edge.
+            text(x + 35, 590, lines[0], 26, fg),
+            text(x + 35, 632, lines[1], 26, fg),
+            text(x + 35, 674, lines[2], 24, fg),
         ])
     b.append(footer("行为是动机线索；主观感受仍需本人确认，结论用于发展与授权。"))
     return 1680, 860, "".join(b)
