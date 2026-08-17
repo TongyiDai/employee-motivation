@@ -102,6 +102,17 @@ def test_meaning_row_links_drive_and_state():
     assert "方向对" in r.stdout and "动力" in r.stdout
 
 
+def test_concrete_actions_are_scene_anchored():
+    r = run("--input", str(FIX / "case-achievement.json"), "--audience", "self", "--format", "markdown")
+    out = r.stdout
+    assert "## 具体下一步（贴合当前场景）" in out
+    assert "真实场景：" in out
+    assert "结果指标：" in out
+    assert "时间锚点：" in out
+    assert "决策/协作边界：" in out
+    assert "复盘触发：" in out
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:

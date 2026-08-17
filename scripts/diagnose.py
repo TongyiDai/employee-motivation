@@ -107,6 +107,125 @@ def render_dimension(key, need, hits, low_hits=None) -> list[str]:
     return L
 
 
+def _anchor(hits: list[dict], fallback: str) -> str:
+    """把证据压成行动锚点，保留真实场景，避免建议漂浮。"""
+    if not hits:
+        return fallback
+    text = " ".join(str(hits[0].get("observation", "")).split())
+    return text[:140] + ("…" if len(text) > 140 else "")
+
+
+def render_concrete_actions(data: dict, r: dict, model: dict, audience: str) -> list[str]:
+    """从真实证据改写行动；没有场景时明确标记待补，不凭空造项目。"""
+    ctx = data.get("context", {})
+    role = ctx.get("role", "当前工作")
+    scenario = ctx.get("scenario") or f"{role}中的当前重点工作"
+    subj = "你" if audience == "self" else "TA"
+    mcc = model["mcclelland"]["needs"]
+    sdt = model["sdt"]["needs"]
+    actions: list[dict[str, str]] = []
+
+    if r["primary"]:
+        key = r["primary"]
+        anchor = _anchor(r["mcc_hits"][key], scenario)
+        if audience == "self":
+            action = (f"把“{anchor}”选为一个端到端主战场，下一次复盘前写清一个结果指标、一个质量或验收标准，"
+                      "并约定完成日期。")
+            boundary = "先写清本人可决定的事项、需要他人配合的事项和最终验收人。"
+        else:
+            action = (f"把“{anchor}”整理成一块完整责任域交给 TA，明确结果指标、质量或验收标准，"
+                      "并在下一次复盘前确认完成日期。")
+            boundary = "给 TA 对做法的选择权，同时明确需要谁配合和谁验收。"
+        actions.append({
+            "title": f"把{mcc[key]['label']}放进一个可验收的主战场",
+            "scene": anchor,
+            "action": action,
+            "result": "交付物、指标、质量阈值和完成日期可被复盘，不用“做好了”作结论。",
+            "time": "下一次项目复盘或一个工作周期内",
+            "boundary": boundary,
+            "review": "若指标或验收标准无法写清，先缩小范围并补一次 1:1 核实。",
+        })
+
+    if r["mcc_hits"]["power"]:
+        anchor = _anchor(r["mcc_hits"]["power"], scenario)
+        if audience == "self":
+            action = (f"在“{anchor}”对应的跨团队事项中，把推动事项改写成 owner、截止时间和决策点，"
+                      "每次会议只保留未关闭的阻塞项。")
+        else:
+            action = (f"在“{anchor}”对应的跨团队事项中，给 TA 一个明确的牵头范围，"
+                      "要求会议产出 owner、截止时间和决策点。")
+        actions.append({
+            "title": "把影响力落到决策点和责任人",
+            "scene": anchor,
+            "action": action,
+            "result": "每个跨团队事项都有明确负责人、截止时间、决策点和验收结果。",
+            "time": "下一次跨团队会议开始执行",
+            "boundary": "区分本人能拍板的事项、需要上级拍板的事项和仅需同步的事项。",
+            "review": "连续两次会议仍靠口头追踪时，停止追加协调，先补流程或权限。",
+        })
+
+    if r["mcc_hits"]["affiliation"]:
+        anchor = _anchor(r["mcc_hits"]["affiliation"], scenario)
+        if audience == "self":
+            action = (f"在“{anchor}”对应的协作场景中固定一个反馈回流节点：会前列问题、会后记负责人和期限，"
+                      "下一次只复盘未关闭项。")
+        else:
+            action = (f"让 TA 在“{anchor}”对应的协作场景中负责一次结构化反馈回流，"
+                      "会后保留负责人、期限和未关闭项。")
+        actions.append({
+            "title": "把协作连接变成稳定的反馈回路",
+            "scene": anchor,
+            "action": action,
+            "result": "反馈有记录、有负责人、有期限，减少依赖个人记忆和碎片传话。",
+            "time": "下一次访谈、评审或项目复盘",
+            "boundary": "只承接本人能推动的反馈，不把所有协作问题都变成个人兜底。",
+            "review": "若反馈连续两轮没有进入决策或产品改动，升级阻塞点或停止无效同步。",
+        })
+
+    for key in SDT:
+        if r["sdt_low"][key]:
+            anchor = _anchor(r["sdt_low"][key], scenario)
+            actions.append({
+                "title": f"优先补足{ sdt[key]['label'] }需求",
+                "scene": anchor,
+                "action": {
+                    "autonomy": "在下一轮任务分配前，先确认本人可选择的做法和认可的工作理由。",
+                    "competence": "在下一轮任务分配前，把挑战拆成够得着的阶段，并约定成长反馈。",
+                    "relatedness": "在下一次 1:1 或项目复盘中安排一次真实的双向反馈，不把连接等同于群消息。",
+                }[key],
+                "result": f"{sdt[key]['label']}需求有一个可观察的改善信号。",
+                "time": "下一次 1:1、任务分配或项目复盘",
+                "boundary": "只调整与该需求直接相关的工作条件，不把推断当作事实。",
+                "review": "两次复盘后仍无改善时，回到本人确认问题是否判断错误。",
+            })
+
+    if not actions:
+        actions.append({
+            "title": "先补一个真实场景",
+            "scene": "待补场景",
+            "action": "请本人提供最近一件最有投入感和一件最消耗的工作，再据此改写行动。",
+            "result": "至少获得一个可回溯的项目、会议或流程场景。",
+            "time": "下一次 1:1 或诊断复核前",
+            "boundary": "不在证据不足时编造项目、指标和期限。",
+            "review": "补齐场景后重新运行诊断。",
+        })
+
+    L = ["## 具体下一步（贴合当前场景）", "",
+         "> 以下动作从当前证据改写；时间、指标和责任边界仍需本人或负责人确认。", ""]
+    for i, item in enumerate(actions[:5], 1):
+        L.extend([
+            f"### {i}. {item['title']}",
+            f"- 真实场景：{item['scene']}",
+            f"- 具体动作：{item['action']}",
+            f"- 结果指标：{item['result']}",
+            f"- 时间锚点：{item['time']}",
+            f"- 决策/协作边界：{item['boundary']}",
+            f"- 复盘触发：{item['review']}",
+            "",
+        ])
+    return L
+
+
 def to_markdown(data: dict, r: dict, model: dict, audience: str) -> str:
     ctx = data.get("context", {})
     L = ["# 员工动机诊断", ""]
@@ -247,6 +366,9 @@ def to_markdown(data: dict, r: dict, model: dict, audience: str) -> str:
     for k in SDT:
         L.extend(render_dimension(k, sdt[k], r["sdt_hits"][k], r["sdt_low"][k]))
         L.append("")
+
+    L.extend(render_concrete_actions(data, r, model, audience))
+    L.append("")
 
     # 建议（按视角）
     L.append("## 建议")

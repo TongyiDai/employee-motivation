@@ -1,1 +1,14 @@
-{"intent":{"core_message":"基于飞书资产诊断，每条结论都有支撑逻辑","subtitle":"OKR · 文档 · 周会 · 与 Agent 的交流 · 消息 → 双模型 → 证据链","composition":"evidence"}}
+{
+  "canvas": {"width": 1200, "height": 675, "ratio": "16:9", "background": "#FFFFFF", "grid": 8},
+  "intent": {"core_message": "飞书资产经过双模型，形成证据链", "subtitle": "每条结论都能回溯到具体行为", "composition": "input-process-output", "focus_node": "evidence"},
+  "style": {"theme": "geometry-minimal", "accent_color": "#2F6BFF", "line_weight": 1, "corner_radius": 0},
+  "nodes": [
+    {"id": "assets", "type": "plane", "label": "飞书资产", "importance": 3},
+    {"id": "model", "type": "cube", "label": "双模型", "importance": 5},
+    {"id": "evidence", "type": "frame", "label": "证据链", "importance": 4}
+  ],
+  "edges": [
+    {"from": "assets", "to": "model", "relation": "输入"},
+    {"from": "model", "to": "evidence", "relation": "解释"}
+  ]
+}

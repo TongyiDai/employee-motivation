@@ -1,1 +1,14 @@
-{"intent":{"core_message":"同一份诊断，两种视角","subtitle":"员工自测给发展建议，Leader/HR 他评给管理建议","composition":"audience"}}
+{
+  "canvas": {"width": 1200, "height": 675, "ratio": "16:9", "background": "#FFFFFF", "grid": 8},
+  "intent": {"core_message": "同一份诊断，按使用者切换建议视角", "subtitle": "自测看发展，管理看授权", "composition": "radial-center", "focus_node": "diagnosis"},
+  "style": {"theme": "geometry-minimal", "accent_color": "#2F6BFF", "line_weight": 1, "corner_radius": 0},
+  "nodes": [
+    {"id": "diagnosis", "type": "circle", "label": "同一份诊断", "importance": 5},
+    {"id": "self", "type": "plane", "label": "员工自测", "importance": 3},
+    {"id": "manager", "type": "plane", "label": "管理者他评", "importance": 3}
+  ],
+  "edges": [
+    {"from": "diagnosis", "to": "self", "relation": "看发展"},
+    {"from": "diagnosis", "to": "manager", "relation": "看授权"}
+  ]
+}

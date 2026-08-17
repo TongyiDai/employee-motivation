@@ -151,8 +151,12 @@ def render_boundary(scene):
     return "".join(b)
 
 
-RENDERERS = {"dual": render_dual, "evidence": render_evidence,
-             "audience": render_audience, "boundary": render_boundary}
+RENDERERS = {
+    "dual": render_dual, "matrix-2d": render_dual,
+    "evidence": render_evidence, "input-process-output": render_evidence,
+    "audience": render_audience, "radial-center": render_audience,
+    "boundary": render_boundary, "tension-contrast": render_boundary,
+}
 
 
 def render(scene):

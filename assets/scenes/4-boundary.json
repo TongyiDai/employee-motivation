@@ -1,1 +1,14 @@
-{"intent":{"core_message":"帮人更懂自己，不给人贴标签","subtitle":"发展性对话与授权；拒绝标签、打分、排序、背对背画像","composition":"boundary"}}
+{
+  "canvas": {"width": 1200, "height": 675, "ratio": "16:9", "background": "#FFFFFF", "grid": 8},
+  "intent": {"core_message": "发展性诊断，守住透明边界", "subtitle": "行为是推断，最终解释权留给本人", "composition": "tension-contrast", "focus_node": "dialogue"},
+  "style": {"theme": "geometry-minimal", "accent_color": "#2F6BFF", "line_weight": 1, "corner_radius": 0},
+  "nodes": [
+    {"id": "evidence", "type": "plane", "label": "行为证据", "importance": 3},
+    {"id": "dialogue", "type": "circle", "label": "发展对话", "importance": 5},
+    {"id": "boundary", "type": "frame", "label": "透明边界", "importance": 4}
+  ],
+  "edges": [
+    {"from": "evidence", "to": "dialogue", "relation": "支持推断"},
+    {"from": "dialogue", "to": "boundary", "relation": "守住边界"}
+  ]
+}

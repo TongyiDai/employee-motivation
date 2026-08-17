@@ -1,3 +1,5 @@
+> “Satisfying human needs for competence, relatedness, and autonomy creates sustainable motivation.” — [Edward L. Deci, Richard M. Ryan et al.](https://selfdeterminationtheory.org/SDT/documents/2009_StoneDeciRyan_JGM.pdf)
+
 # 员工动机诊断
 
 <p align="center">
@@ -8,7 +10,7 @@
   <img src="https://img.shields.io/badge/works%20with-Codex%20|%20Claude%20|%20Cursor%20|%20TRAE-555" alt="Works with major agents">
 </p>
 
-基于员工在飞书上沉淀的真实工作资产（OKR、文档、周会表现，以及员工与 AI Agent 的交流内容），诊断「他被什么驱动、动机状态如何」，并按使用者视角给出对应建议。不靠拍脑袋或单一问卷，而是用两个学术界公认的成熟动机模型做骨架，多维度、带证据链地推断。
+基于员工在飞书上沉淀的真实工作资产（OKR、文档、周会表现，以及员工与 AI Agent 的交流内容），诊断「他被什么驱动、动机状态如何」，并按使用者视角给出对应建议。不靠拍脑袋或单一问卷，而是用两个学术界公认的成熟动机模型做骨架，多维度、带证据链地推断。完整模式采用细颗粒度总分式输出：结论先行，逐维度拆证据，再把下一步落到真实项目、会议或流程。
 
 ## 特色：双模型骨架，带科学诊断依据
 
@@ -47,6 +49,18 @@
 | 所以该怎么办 | 把机会给对，同时补上偏低的需求。 | 1. 争取有难度、能拉伸能力的项目；把「做到最好」的标准显性化，让成果可被看见<br>2. 补团队连接、别让你长期孤军奋战 |
 
 诊断结果是大白话总结，支撑论据用编号分条、均来自飞书资产或与 Agent 的交流。结论表之后，再给每个维度的完整证据链（倾向 → 支撑证据 → 推断逻辑 → 置信度）。行为不完全等于动机（写很多文档可能是成就驱动，也可能只是岗位要求），所以结论是**推断**，最终需本人确认。
+
+## 具体下一步：从判断回到真实工作
+
+完整诊断不会停在“提升影响力、加强沟通”这类抽象建议。每条行动都绑定一个真实场景，并写清：具体动作、结果指标、时间锚点、决策/协作边界和复盘触发条件。证据不足时标记“待补场景”，不编造项目、指标或期限。
+
+## 飞书云文档 + Geometry Blue 画板
+
+用户要求报告或沉淀结果时，Skill 可同时交付当前对话中的完整文字总结和一份飞书云文档。文档保存完整证据链、场景化解释和具体行动，并在结论表之后关联一张 Geometry Blue 画板，表达：
+
+`主导驱动 → 当前状态 → 真实工作场景 → 下一步动作`
+
+画板通过飞书文档中的可编辑白板资源块写入，写入后回读文档结构和画板插入点，区分“已生成、已插入、已写入、已验证”。没有写入权限时保留文字报告和本地 SVG，并明确说明阻塞环节。
 
 ## 两种模式，两种视角
 
@@ -92,10 +106,11 @@ references/
   motivation-model.md          模型说明（含首次使用科普）
   feishu-evidence.md           飞书资产 → 六维度证据映射
   driver-actions.md            驱动对齐的行动建议
+  report-and-delivery.md       总分式报告、具体行动、云文档与画板交付规范
   input-schema.md              脚本输入格式
   boundaries.md                隐私与边界
 scripts/
-  diagnose.py                  双模型诊断器（证据链 + 视角切换 + 团队）
+  diagnose.py                  双模型诊断器（证据链 + 场景化行动 + 视角切换 + 团队）
   render_boards.py             Geometry Blue 画板渲染
 tests/                         假数据与单元测试
 assets/                        画板场景与渲染图
