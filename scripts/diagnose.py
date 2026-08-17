@@ -151,7 +151,91 @@ def to_markdown(data: dict, r: dict, model: dict, audience: str) -> str:
         L.append("现有证据不足以判断主导驱动，建议补充飞书资产（OKR、文档、周会、与 Agent 的交流）或在 1:1 核实。")
     L.append("")
 
-    # 麦氏三需要
+    # 结论表：三列（诊断维度 / 诊断结果 / 支撑论据）× 四行
+    # 四行 = 被什么驱动 → 现在的状态 → 这意味着什么 → 所以该怎么办
+    subj = "你" if audience == "self" else "TA"
+
+    def numbered(items):
+        return "<br>".join(f"{i}. {it}" for i, it in enumerate(items, 1) if it)
+
+    L.append("## 结论表")
+    L.append("")
+    L.append("| 诊断维度 | 诊断结果 | 支撑论据 |")
+    L.append("| --- | --- | --- |")
+
+    # 行1：被什么驱动
+    if prim:
+        parts = [f"主导是{mcc[prim]['label']}"]
+        if sec:
+            parts.append(f"其次是{mcc[sec]['label']}")
+        weakest = [k for k in MCC if len(r["mcc_hits"][k]) == 0]
+        if weakest:
+            parts.append("、".join(mcc[k]["label"] for k in weakest) + "偏弱")
+        drive_result = "，".join(parts) + "。"
+        drive_ev = []
+        for k in MCC:
+            hits = r["mcc_hits"][k]
+            if hits:
+                obs = "；".join(h["observation"] for h in hits[:2])
+                drive_ev.append(f"{mcc[k]['label']}（{tier(len(hits))}）：{obs}")
+    else:
+        drive_result = "现有证据不足以判断主导驱动，建议在 1:1 里核实。"
+        drive_ev = ["暂无足够行为证据，建议补充 OKR、文档、周会或与 Agent 的交流记录"]
+    L.append(f"| {subj}被什么驱动 | {drive_result} | {numbered(drive_ev)} |")
+
+    # 行2：现在的状态
+    lows = [k for k in SDT if r["sdt_low"][k]]
+    goods = [k for k in SDT if len(r["sdt_hits"][k]) >= 1 and not r["sdt_low"][k]]
+    if lows or goods:
+        sp = []
+        if lows:
+            sp.append("、".join(sdt[k]["label"] for k in lows) + " 偏低")
+        if goods:
+            sp.append("、".join(sdt[k]["label"] for k in goods) + " 尚可")
+        state_result = "；".join(sp) + "。"
+        state_ev = []
+        for k in lows:
+            obs = r["sdt_low"][k][0]["observation"] if r["sdt_low"][k] else "该需求相关信号偏少"
+            state_ev.append(f"{sdt[k]['label']}（偏低）：{obs}")
+        for k in goods:
+            obs = "；".join(h["observation"] for h in r["sdt_hits"][k][:1])
+            state_ev.append(f"{sdt[k]['label']}（尚可）：{obs}")
+    else:
+        state_result = "现有证据不足以判断动机状态。"
+        state_ev = ["暂无足够状态信号，建议补充 1:1、协作、OKR 等资产"]
+    L.append(f"| {subj}现在的状态 | {state_result} | {numbered(state_ev)} |")
+
+    # 行3：这意味着什么（把驱动+状态的关系用大白话讲通）
+    if prim and lows:
+        mean_result = (f"{subj}想要的是「{mcc[prim]['label']}」那类的事，"
+                       f"但当前「{'、'.join(sdt[k]['label'] for k in lows)}」偏低——"
+                       f"方向对，动力却在流失，这是最该优先补的地方。")
+        mean_ev = [mcc[prim]["implications"][0]] + [sdt[k]["low_implications"][0] for k in lows]
+    elif prim:
+        mean_result = f"{subj}被「{mcc[prim]['label']}」驱动，且几项状态都还不错，方向与状态匹配良好。"
+        mean_ev = [mcc[prim]["implications"][0]] + [sdt[k]["good_implication"] for k in goods[:2]]
+    else:
+        mean_result = "方向和状态都还不清楚，先补证据再谈关系。"
+        mean_ev = ["动机是推断，不是标签；证据不足时不硬下结论"]
+    L.append(f"| 这意味着什么 | {mean_result} | {numbered(mean_ev)} |")
+
+    # 行4：所以该怎么办
+    key = "self_advice" if audience == "self" else "manager_advice"
+    todo = []
+    if prim:
+        todo.append(mcc[prim][key].rstrip("。"))
+    for k in lows:
+        fix = {"autonomy": "减少微观管理、给自主决定的空间",
+               "competence": "给够得着的挑战和及时的成长反馈",
+               "relatedness": f"补团队连接、别让{subj}长期孤军奋战"}[k]
+        todo.append(fix)
+    if not todo:
+        todo = ["先在 1:1 里核实动机与状态，再定动作"]
+    todo_result = "把机会给对，同时补上偏低的需求。"
+    L.append(f"| 所以该怎么办 | {todo_result} | {numbered(todo)} |")
+    L.append("")
+    L.append(f"> 一条逻辑线：先看 {subj} 被什么驱动，再看现在状态如何，「这意味着什么」把两者的关系讲通，最后给出对应动作。诊断结果为大白话总结，支撑论据均来自飞书资产或与 Agent 的交流。下面是每个维度的完整证据链。")
+    L.append("")
     L.append("## 驱动方向（麦克利兰三需要）")
     for k in MCC:
         L.extend(render_dimension(k, mcc[k], r["mcc_hits"][k]))

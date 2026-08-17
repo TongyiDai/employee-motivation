@@ -85,6 +85,23 @@ def test_agent_chat_evidence_counted():
     assert "Agent 交流" in r.stdout
 
 
+def test_conclusion_table_four_rows():
+    r = run("--input", str(FIX / "case-achievement.json"), "--audience", "self", "--format", "markdown")
+    out = r.stdout
+    assert "## 结论表" in out
+    assert "| 诊断维度 | 诊断结果 | 支撑论据 |" in out
+    for row in ["你被什么驱动", "你现在的状态", "这意味着什么", "所以该怎么办"]:
+        assert row in out
+    # 支撑论据用 1. 2. 编号
+    assert "1. " in out and "2. " in out
+
+
+def test_meaning_row_links_drive_and_state():
+    r = run("--input", str(FIX / "case-achievement.json"), "--audience", "self", "--format", "markdown")
+    # 「这意味着什么」行应把驱动和偏低状态联系起来
+    assert "方向对" in r.stdout and "动力" in r.stdout
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:
