@@ -1,0 +1,8 @@
+{
+  "team": "稳定性小组",
+  "members": [
+    {"alias": "成员A", "primary": "achievement", "secondary": "power"},
+    {"alias": "成员B", "primary": "achievement"},
+    {"alias": "成员C", "primary": "power"}
+  ]
+}

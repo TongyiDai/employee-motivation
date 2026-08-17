@@ -1,0 +1,105 @@
+# 员工动机诊断
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Agent%20Skill-agentskills.io-2F6BFF" alt="Agent Skill">
+  <img src="https://img.shields.io/badge/license-MIT-3fb950" alt="License MIT">
+  <img src="https://img.shields.io/badge/model-McClelland%20%C3%97%20SDT-2F6BFF" alt="Dual model">
+  <img src="https://img.shields.io/badge/python-%3E%3D3.8-3572A5" alt="Python >=3.8">
+  <img src="https://img.shields.io/badge/works%20with-Codex%20|%20Claude%20|%20Cursor%20|%20TRAE-555" alt="Works with major agents">
+</p>
+
+基于员工在飞书上沉淀的真实工作资产（OKR、文档、周会表现，以及员工与 AI Agent 的交流内容），诊断「他被什么驱动、动机状态如何」，并按使用者视角给出对应建议。不靠拍脑袋或单一问卷，而是用两个学术界公认的成熟动机模型做骨架，多维度、带证据链地推断。
+
+## 特色：双模型骨架，带科学诊断依据
+
+<p align="center">
+  <img src="assets/boards/1-dual-model.png" alt="双模型：麦克利兰三需要定方向 × SDT 定状态" width="90%">
+</p>
+
+市面上多数「动机测试」是自造的分类，缺乏理论根基。这枚 Skill 的核心区别是**叠加两个经过验证的动机模型**：
+
+- **麦克利兰成就动机理论**（方向）——判断被什么内在需要驱动：
+  - **成就 nAch**：想把事做到最好、爱挑战难题，满足感来自「搞定一件难事」本身。
+  - **亲和 nAff**：想要好的关系和归属感，重视团队、协作、和同事的连接。
+  - **权力/影响 nPow**：想影响他人、推动结果、有话语权（组织权力是好领导的底色）。
+- **自我决定理论 SDT**（状态）——判断动机质量与是否被满足：
+  - **自主 Autonomy**：能自己决定、认同做事的理由，而非被逼。
+  - **胜任 Competence**：有「我有能力、在变强」的体验。
+  - **归属 Relatedness**：和人有连接、被在意、属于团队。
+
+**方向 × 状态 = 立体诊断**：麦氏告诉你「他朝哪使劲」，SDT 告诉你「这股劲顺不顺、被不被满足」，而不是贴一个标签就完事。首次使用时，Skill 会用大白话解释这六个维度，非专业用户也能秒懂。
+
+## 基于飞书资产，每条结论都有支撑逻辑
+
+<p align="center">
+  <img src="assets/boards/2-evidence-chain.png" alt="飞书资产→双模型→带证据链的诊断输出" width="90%">
+</p>
+
+诊断以飞书工作资产为主要依据（OKR、文档、周会，以及**员工与 AI Agent 的交流内容**——一个人和 codex/claude/豆包企业版等 AI 怎么对话，很能反映他关心什么、怎么工作，是 agent-agnostic 的特色信号源）。每个维度的结论固定格式：**倾向（强/中/弱）→ 支撑证据（哪个资产的哪条行为）→ 推断逻辑 → 置信度 + 需本人确认**。行为不完全等于动机（写很多文档可能是成就驱动，也可能只是岗位要求），所以结论是**推断**，最终需本人确认。输出结构固定为**先总结（驱动画像 + 动机状态）、后建议**。
+
+## 两种模式，两种视角
+
+<p align="center">
+  <img src="assets/boards/3-audience.png" alt="员工自测给员工视角建议，Leader/HR 他评给管理视角建议" width="90%">
+</p>
+
+- **员工自测（audience=self）**：站在员工视角——你的主导动机、当前哪个需求没被满足、未来该争取什么机会、补哪一块。
+- **Leader/HR 他评（audience=manager）**：站在管理视角——该成员被什么驱动、该分什么活、怎么激励、团队缺哪种驱动、怎么补位。
+
+他评有硬边界：**只对自己直属成员、且过程对本人透明可复核**。
+
+## 边界：帮人更懂自己，不给人贴标签
+
+<p align="center">
+  <img src="assets/boards/4-boundary.png" alt="用于发展性对话与授权；拒绝标签、打分、排序、背对背画像" width="90%">
+</p>
+
+结论用于**发展性对话与授权安排**，明确拒绝：性格标签、绩效打分、人员排序、背对背画像。对话消息只作辅助且他评须透明。详见 [references/boundaries.md](references/boundaries.md)。
+
+## 快速开始
+
+```bash
+# 员工自测视角
+python3 scripts/diagnose.py --input tests/fixtures/case-achievement.json --audience self --format markdown
+
+# Leader/HR 他评视角
+python3 scripts/diagnose.py --input tests/fixtures/case-achievement.json --audience manager --format markdown
+
+# 团队构成诊断
+python3 scripts/diagnose.py --team tests/fixtures/team.json --format markdown
+```
+
+飞书证据的只读读取契约见 [references/feishu-evidence.md](references/feishu-evidence.md)；模型详解见 [references/motivation-model.md](references/motivation-model.md)；输入格式见 [references/input-schema.md](references/input-schema.md)。
+
+## 目录结构
+
+```text
+SKILL.md                       技能主文件（双模型、飞书资产、视角、科普块）
+AGENT-GUIDE.md                 跨 Agent 使用须知
+references/
+  motivation-model.json        双模型六维度的机器可读真源
+  motivation-model.md          模型说明（含首次使用科普）
+  feishu-evidence.md           飞书资产 → 六维度证据映射
+  driver-actions.md            驱动对齐的行动建议
+  input-schema.md              脚本输入格式
+  boundaries.md                隐私与边界
+scripts/
+  diagnose.py                  双模型诊断器（证据链 + 视角切换 + 团队）
+  render_boards.py             Geometry Blue 画板渲染
+tests/                         假数据与单元测试
+assets/                        画板场景与渲染图
+```
+
+## 面向所有 Agent
+
+本 Skill 不绑定任何单一平台。任何能读取 `SKILL.md`、处理用户材料、执行本地 Python 脚本的 Agent 都可使用。使用方式见 [AGENT-GUIDE.md](AGENT-GUIDE.md)。
+
+## 测试
+
+```bash
+python3 tests/test_diagnose.py
+```
+
+## 许可证与出处
+
+MIT，见 [LICENSE](LICENSE)。上游来源（`manager-dot-dev/manager-skills`）、学术模型出处（McClelland / Deci & Ryan）与扩展说明见 [UPSTREAM.md](UPSTREAM.md) 和 [NOTICE](NOTICE)。模型为中文语境重述与工程化落地，非任何专有测评问卷的逐字复制。

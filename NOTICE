@@ -1,0 +1,10 @@
+This package adapts concepts from the manager-skills repository and builds on two established academic motivation models.
+
+Upstream project: https://github.com/manager-dot-dev/manager-skills
+Reference skills: skills/engineer-motivation, skills/career-development
+Upstream commit: c47ebc7adc3ef84056f059e2a426077cfe12de8c
+License: MIT; see LICENSE.
+
+Academic models: McClelland's Acquired Needs Theory (achievement/affiliation/power) and Deci & Ryan's Self-Determination Theory (autonomy/competence/relatedness).
+
+The dual-model design, Feishu/Lark data-asset-driven diagnosis, evidence-chain output, self/manager audience switching, scenario generalization, plain-language onboarding, privacy safeguards, tests, and visual assets in this package are project additions.
