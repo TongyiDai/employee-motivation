@@ -1,7 +1,7 @@
 {
-  "canvas": {"width": 1200, "height": 675, "ratio": "16:9", "background": "#FFFFFF", "grid": 8},
+  "canvas": {"width": 1680, "height": 860, "ratio": "editorial-cards", "background": "#fdf0e0", "grid": 8},
   "intent": {"core_message": "发展性诊断，守住透明边界", "subtitle": "行为是推断，最终解释权留给本人", "composition": "tension-contrast", "focus_node": "dialogue"},
-  "style": {"theme": "geometry-minimal", "accent_color": "#2F6BFF", "line_weight": 1, "corner_radius": 0},
+  "style": {"theme": "blue-cream-editorial", "accent_color": "#375dfe", "surface_color": "#fdf0e0", "ink_color": "#1a2240", "line_weight": 4, "corner_radius": 0},
   "nodes": [
     {"id": "evidence", "type": "plane", "label": "行为证据", "importance": 3},
     {"id": "dialogue", "type": "circle", "label": "发展对话", "importance": 5},

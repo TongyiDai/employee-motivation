@@ -1,7 +1,7 @@
 {
-  "canvas": {"width": 1200, "height": 675, "ratio": "16:9", "background": "#FFFFFF", "grid": 8},
+  "canvas": {"width": 1680, "height": 860, "ratio": "editorial-cards", "background": "#fdf0e0", "grid": 8},
   "intent": {"core_message": "同一份诊断，按使用者切换建议视角", "subtitle": "自测看发展，管理看授权", "composition": "radial-center", "focus_node": "diagnosis"},
-  "style": {"theme": "geometry-minimal", "accent_color": "#2F6BFF", "line_weight": 1, "corner_radius": 0},
+  "style": {"theme": "blue-cream-editorial", "accent_color": "#375dfe", "surface_color": "#fdf0e0", "ink_color": "#1a2240", "line_weight": 4, "corner_radius": 0},
   "nodes": [
     {"id": "diagnosis", "type": "circle", "label": "同一份诊断", "importance": 5},
     {"id": "self", "type": "plane", "label": "员工自测", "importance": 3},
