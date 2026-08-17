@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -59,6 +60,32 @@ def confidence(n_evidence: int) -> str:
     return "高" if n_evidence >= 3 else "中" if n_evidence == 2 else "低"
 
 
+def compact_observation(observation: str, limit: int = 34, summary: str | None = None) -> str:
+    """把完整观察压成结论表里的短证据锚点；详情区仍保留原句。"""
+    if summary and str(summary).strip():
+        return str(summary).strip()
+    text = " ".join(str(observation).split())
+    match = re.search(r"在《([^》]+)》中，(.+?)(?:，并|；|。|，本人|$)", text)
+    if match:
+        title, action = match.groups()
+        action = action.rstrip("，。；")
+        if len(action) > limit:
+            action = action[:limit].rstrip("，、；") + "…"
+        return f"《{title}》：{action}"
+    if len(text) > limit:
+        return text[:limit].rstrip("，、；") + "…"
+    return text
+
+
+def short_evidence(hits: list[dict], label: str | None = None, limit: int = 2) -> list[str]:
+    """结论表专用：来源 + 短行为锚点，不把详情搬进总览。"""
+    rows = []
+    for h in hits[:limit]:
+        prefix = f"{label}｜" if label else ""
+        rows.append(f"{prefix}{h['source']}：{compact_observation(h['observation'], summary=h.get('summary'))}")
+    return rows
+
+
 def diagnose_person(data: dict, model: dict) -> dict:
     evidence = data.get("evidence", [])
     mcc_hits = {k: [] for k in MCC}
@@ -67,7 +94,11 @@ def diagnose_person(data: dict, model: dict) -> dict:
 
     for ev in evidence:
         for sig in ev.get("signals", []):
-            item = {"source": ev.get("source", "?"), "observation": ev.get("observation", "")}
+            item = {
+                "source": ev.get("source", "?"),
+                "observation": ev.get("observation", ""),
+                "summary": ev.get("summary", ""),
+            }
             if sig in mcc_hits:
                 mcc_hits[sig].append(item)
             elif sig in sdt_hits:
@@ -98,6 +129,10 @@ def render_dimension(key, need, hits, low_hits=None) -> list[str]:
             L.append(f"  - [{h['source']}] {h['observation']}")
         L.append(f"- 推断逻辑：以上行为符合「{need['label']}」的典型信号（{need['plain'][:24]}…）")
         L.append(f"- 置信度：{confidence(n)} —— 行为推断，与本人认知可能有差")
+        if low_hits is None:
+            L.append("- 替代解释/需确认：也可能来自岗位要求或当期项目阶段；需本人确认是否有内在投入。")
+        else:
+            L.append("- 不能由行为证明：现有记录能说明工作方式，不能单独证明主观满足感；需本人确认。")
     else:
         L.append("- 证据不足：现有飞书资产未见明显信号，暂不下结论。")
     if low_hits:
@@ -303,8 +338,7 @@ def to_markdown(data: dict, r: dict, model: dict, audience: str) -> str:
         for k in MCC:
             hits = r["mcc_hits"][k]
             if hits:
-                obs = "；".join(h["observation"] for h in hits[:2])
-                drive_ev.append(f"{mcc[k]['label']}（{tier(len(hits))}）：{obs}")
+                drive_ev.extend(short_evidence(hits, f"{mcc[k]['label']}（{tier(len(hits))}）", limit=1))
     else:
         drive_result = "现有证据不足以判断主导驱动，建议在 1:1 里核实。"
         drive_ev = ["暂无足够行为证据，建议补充 OKR、文档、周会或与 Agent 的交流记录"]
@@ -323,10 +357,9 @@ def to_markdown(data: dict, r: dict, model: dict, audience: str) -> str:
         state_ev = []
         for k in lows:
             obs = r["sdt_low"][k][0]["observation"] if r["sdt_low"][k] else "该需求相关信号偏少"
-            state_ev.append(f"{sdt[k]['label']}（偏低）：{obs}")
+            state_ev.extend(short_evidence(r["sdt_low"][k], f"{sdt[k]['label']}（偏低）", limit=1))
         for k in goods:
-            obs = "；".join(h["observation"] for h in r["sdt_hits"][k][:1])
-            state_ev.append(f"{sdt[k]['label']}（尚可）：{obs}")
+            state_ev.extend(short_evidence(r["sdt_hits"][k], f"{sdt[k]['label']}（尚可）", limit=1))
     else:
         state_result = "现有证据不足以判断动机状态。"
         state_ev = ["暂无足够状态信号，建议补充 1:1、协作、OKR 等资产"]
@@ -359,7 +392,7 @@ def to_markdown(data: dict, r: dict, model: dict, audience: str) -> str:
     if not todo:
         todo = ["先在 1:1 里核实动机与状态，再定动作"]
     todo_result = "把机会给对，同时补上偏低的需求。"
-    L.append(f"| 所以该怎么办 | {todo_result} | {numbered(todo)} |")
+    L.append(f"| 所以该怎么办 | {todo_result} | {numbered(todo[:3])} |")
     L.append("")
     L.append(f"> 一条逻辑线：先看 {subj} 被什么驱动，再看现在状态如何，「这意味着什么」把两者的关系讲通，最后给出对应动作。诊断结果为大白话总结，支撑论据均来自飞书资产或与 Agent 的交流。下面是每个维度的完整证据链。")
     L.append("")

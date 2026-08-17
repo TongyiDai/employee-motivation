@@ -24,7 +24,7 @@
     "note": "audience: self（员工自测）/ manager（Leader/HR 他评）"
   },
   "evidence": [
-    {"source": "OKR", "observation": "本季度给自己定了从零搭建监控体系的拉伸目标", "signals": ["achievement", "autonomy"]},
+    {"source": "OKR", "observation": "本季度给自己定了从零搭建监控体系的拉伸目标", "summary": "从零搭建监控体系", "signals": ["achievement", "autonomy"]},
     {"source": "文档", "observation": "写了一篇 5000 字的架构复盘，把踩过的坑讲透", "signals": ["achievement", "competence"]},
     {"source": "Agent 交流", "observation": "和 AI 反复追问性能优化的更优解，不满足于第一个答案", "signals": ["achievement", "competence"]},
     {"source": "周会", "observation": "主动牵头跨团队的稳定性专项，协调三个组", "signals": ["power"]},
@@ -43,6 +43,7 @@
 - `evidence[]`：每条一个观察，来自某个飞书资产。
   - `source`：资产类型（OKR / 文档 / 周会 / Agent 交流 / 协作 / 消息）。Agent 交流指员工与 codex/claude/豆包企业版等 AI 的会话。
   - `observation`：具体行为描述（脱敏）。
+  - `summary`：可选的短行为锚点，建议 8–16 个汉字，供结论表使用；完整证据仍保留在 `observation`。
   - `signals`：这条证据指向的维度。取值：
     - 麦氏：`achievement` / `affiliation` / `power`
     - SDT：`autonomy` / `competence` / `relatedness`
