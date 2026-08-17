@@ -1,7 +1,7 @@
 {
-  "canvas": {"width": 1200, "height": 675, "ratio": "16:9", "background": "#FFFFFF", "grid": 8},
+  "canvas": {"width": 1680, "height": 960, "ratio": "editorial-split", "background": "#fdf0e0", "grid": 8},
   "intent": {"core_message": "两个成熟模型叠加，形成完整诊断", "subtitle": "麦克利兰定方向 × SDT 定状态", "composition": "matrix-2d", "focus_node": "diagnosis"},
-  "style": {"theme": "geometry-minimal", "accent_color": "#2F6BFF", "line_weight": 1, "corner_radius": 0},
+  "style": {"theme": "blue-cream-editorial", "accent_color": "#375dfe", "surface_color": "#fdf0e0", "ink_color": "#1a2240", "line_weight": 4, "corner_radius": 0},
   "nodes": [
     {"id": "direction", "type": "plane", "label": "驱动方向", "importance": 3},
     {"id": "state", "type": "plane", "label": "满足状态", "importance": 3},

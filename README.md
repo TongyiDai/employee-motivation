@@ -15,7 +15,7 @@
 ## 特色：双模型骨架，带科学诊断依据
 
 <p align="center">
-  <img src="assets/boards/1-dual-model.png" alt="双模型：麦克利兰三需要定方向 × SDT 定状态" width="90%">
+  <img src="assets/boards/1-dual-model.png?v=20260817" alt="双模型：麦克利兰三需要定方向 × SDT 定状态" width="90%">
 </p>
 
 市面上多数「动机测试」是自造的分类，缺乏理论根基。这枚 Skill 的核心区别是**叠加两个经过验证的动机模型**：
@@ -34,7 +34,7 @@
 ## 基于飞书资产，每条结论都有支撑逻辑
 
 <p align="center">
-  <img src="assets/boards/2-evidence-chain.png" alt="飞书资产→双模型→带证据链的诊断输出" width="90%">
+  <img src="assets/boards/2-evidence-chain.png?v=20260817" alt="飞书资产→双模型→带证据链的诊断输出" width="90%">
 </p>
 
 诊断以飞书工作资产为主要依据（OKR、文档、周会，以及**员工与 AI Agent 的交流内容**——一个人和 codex/claude/豆包企业版等 AI 怎么对话，很能反映他关心什么、怎么工作，是 agent-agnostic 的特色信号源）。
@@ -60,7 +60,9 @@
 
 ## 飞书云文档 + Geometry Blue 画板
 
-用户要求报告或沉淀结果时，Skill 可同时交付当前对话中的完整文字总结和一份飞书云文档。文档保存完整证据链、场景化解释和具体行动，并默认关联 4 张 Geometry Blue 画板：开头 1 张总览，中段 2–3 张分别解释驱动、状态、场景或行动。多张画板按主题分散插入，至少使用 3 种构图家族，并写入画板直达链接。
+用户要求报告或沉淀结果时，Skill 可同时交付当前对话中的完整文字总结和一份飞书云文档。文档保存完整证据链、场景化解释和具体行动，并默认关联 4 张 Geometry Blue 画板：总览画板紧跟文档标题，成为正文中的第一个块；中段 2–3 张分别解释驱动、状态、场景或行动。多张画板按主题分散插入，至少使用 3 种构图家族，并写入画板直达链接。
+
+画板默认采用蓝色—米色—深蓝参考版式：`#375dfe` 主蓝、`#fdf0e0` 米色底、`#1a2240` 深蓝文字与边框、白色信息块。总览采用左右分栏，驱动采用“维度｜行为证据｜判断”表格，状态与行动采用 3 张编号卡片；标题、重点块、边框、留白保持统一，正文承载完整证据。
 
 `主导驱动 → 当前状态 → 真实工作场景 → 下一步动作`
 
@@ -69,7 +71,7 @@
 ## 两种模式，两种视角
 
 <p align="center">
-  <img src="assets/boards/3-audience.png" alt="员工自测给员工视角建议，Leader/HR 他评给管理视角建议" width="90%">
+  <img src="assets/boards/3-audience.png?v=20260817" alt="员工自测给员工视角建议，Leader/HR 他评给管理视角建议" width="90%">
 </p>
 
 - **员工自测（audience=self）**：站在员工视角——你的主导动机、当前哪个需求没被满足、未来该争取什么机会、补哪一块。
@@ -80,7 +82,7 @@
 ## 边界：帮人更懂自己，不给人贴标签
 
 <p align="center">
-  <img src="assets/boards/4-boundary.png" alt="用于发展性对话与授权；拒绝标签、打分、排序、背对背画像" width="90%">
+  <img src="assets/boards/4-boundary.png?v=20260817" alt="用于发展性对话与授权；拒绝标签、打分、排序、背对背画像" width="90%">
 </p>
 
 结论用于**发展性对话与授权安排**，明确拒绝：性格标签、绩效打分、人员排序、背对背画像。对话消息只作辅助且他评须透明。详见 [references/boundaries.md](references/boundaries.md)。
