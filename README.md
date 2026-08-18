@@ -1,6 +1,6 @@
 > “Satisfying human needs for competence, relatedness, and autonomy creates sustainable motivation.” — [Edward L. Deci, Richard M. Ryan et al.](https://selfdeterminationtheory.org/SDT/documents/2009_StoneDeciRyan_JGM.pdf)
 
-# 员工动机诊断
+<h1 align="center">员工动机诊断</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Agent%20Skill-agentskills.io-2F6BFF" alt="Agent Skill">
